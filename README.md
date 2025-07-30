@@ -1081,7 +1081,12 @@ if __name__ == '__main__':
     train()
 ```
 ## 训练结果（jittor与pytorch对齐）
+### jittor
+![image](https://github.com/kira9339/jittor_lwf/blob/main/training_metrics.png)
+### pytorch
+![image](https://github.com/kira9339/jittor_lwf/blob/main/training_metrics_pytorch.png)
 ## 注意事项
+
 直接在windows系统中下载jittor会出现无法运行的报错，jittor在windows系统下兼容性不是很好。
 
 安装中会出现ImportError: libstdc++.so.6: version `GLIBCXX_3.4.30'报错，如果电脑里面有对应的版本，是因为 Conda 环境使用了自带的旧版 libstdc++.so.6，需要删除旧的库，手动安装新库。
