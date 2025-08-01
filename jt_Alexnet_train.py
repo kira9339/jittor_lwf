@@ -12,7 +12,7 @@ from tqdm import tqdm
 jt.flags.use_cuda = 0  
 jt.flags.log_silent = True
 
-# 旧模型定义（与pretrain_old_model.py完全一致）
+
 class OldAlexNet(nn.Module):
     def __init__(self, num_classes=100):
         super().__init__()
@@ -41,9 +41,8 @@ class OldAlexNet(nn.Module):
     def execute(self, x):
         x = self.features(x)
         x = x.view(x.size(0), 256*6*6)
-        return self.classifier(x)  # 仅返回旧任务输出（形状：[batch, 100]）
+        return self.classifier(x)  
 
-# 新模型定义（支持新旧任务双输出）
 class AlexNet(nn.Module):
     def __init__(self, num_old_classes=100, num_new_classes=100):
         super().__init__()
@@ -78,7 +77,7 @@ class AlexNet(nn.Module):
         x = self.features(x)
         x = x.view(x.size(0), 256*6*6)
         y_old = self.old_classifier(x)  # 形状：[batch, 100]
-        y_new = self.new_classifier(x)  # 形状：[batch, 100]
+        y_new = self.new_classifier(x)  
         return (y_old, y_new)  # 明确返回元组
 
 def calculate_accuracy(model, data_loader, task='new'):
@@ -90,30 +89,29 @@ def calculate_accuracy(model, data_loader, task='new'):
         for inputs, targets in data_loader:
             outputs = model(inputs)
 
-            # 处理新旧任务双输出的情况
+    
             if isinstance(outputs, tuple):
                 outputs_old, outputs_new = outputs
             else:
                 outputs_old = outputs_new = outputs
 
-            # 选择当前任务的输出
             outputs_task = outputs_new if task == 'new' else outputs_old
             predicted = outputs_task.argmax(1)
-            # 检查predicted是否为元组
+
             if isinstance(predicted, tuple):
-                # 如果是元组，取第二个元素（索引）
+          
                 if len(predicted) >= 2:
-                    predicted = predicted[1]  # 取索引部分
+                    predicted = predicted[1] 
                 else:
                     raise RuntimeError("argmax返回的元组长度不足，无法获取索引")
-                            # 确保 predicted 是 jittor.Var 类型
+                         
             if not isinstance(predicted, jt.Var):
                 raise RuntimeError(f"predicted 不是 jittor.Var 类型，而是 {type(predicted)} 类型")
             if total == 0:
                 print(f"[Debug] predicted type: {type(predicted)}")
                 print(f"[Debug] predicted shape: {predicted.shape if hasattr(predicted, 'shape') else 'N/A'}")
                 print(f"[Debug] targets shape: {targets.shape}")      
-            # 计算正确预测数
+
             predicted = predicted.int32()
             targets = targets.int32()
             jt.sync_all()
