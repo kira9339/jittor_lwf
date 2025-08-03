@@ -1094,5 +1094,8 @@ if __name__ == '__main__':
 数据准备脚本是jt_ds.py和pytorch_ds.py，预训练脚本是jt_pretrain_old_model.py和pytorch_pretrain_old_model.py，测试脚本是jt_Alexnet_train.py和alext_pytorch.py，按顺序进行运行。
 
 数据集是Tiny-imagenet（论文中是imagenet，但是受限于电脑性能以及下载速度选用的小数据集），将这个数据集随机平均分成两份，作为新旧任务。
+## 最后
+论文复现有诸多瑕疵，一切以原文为主。原文作者的代码使用matlab工具箱进行编写的
+在数据集的剪裁方法选用过于直接，原文的数据选择方法会更好
 
 
